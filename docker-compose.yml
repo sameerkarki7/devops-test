@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  devops-app:
+    build: .
+    container_name: devops-test-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: always
