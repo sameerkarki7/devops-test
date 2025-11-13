@@ -1,82 +1,88 @@
-1. Project Structure
-devops-test/
-├── app.js                 # Node.js application
-├── package.json           # Node.js dependencies
-├── Dockerfile             # Containerizes the Node app
-├── docker-compose.yml     # Runs Node app + Loki + Promtail + Grafana
-├── promtail-config.yml    # Promtail configuration to collect logs
-├── deploy.sh              # Bash deployment script
-├── .github/
-│   └── workflows/
-│       └── ci.yml         # GitHub Actions workflow
-└── README.md              # This documentation
+# 🚀 DevOps Test Project
 
-Prerequisites
+## 📝 Overview
+This is a **simple Node.js app** with:  
+- **Docker containerization** 🐳  
+- **CI/CD using GitHub Actions** ⚙️  
+- **Logging & monitoring with Loki + Grafana** 📊  
+- **Automated deployment via Bash script** 💻  
 
-Docker Desktop installed and running
+---
 
-Git installed (for cloning repository)
+## 🖥 Steps to Run Everything (Terminal Style)
 
-Git Bash or WSL (for running the Bash deployment script on Windows)
-
-2.How to Run Locally
-1. Clone the repository
+```bash
+# 🔹 1. Clone the repository
 git clone https://github.com/sameerkarki7/devops-test.git
 cd devops-test
 
-2. Start the app and monitoring stack using Docker Compose
+# 🔹 2. Start the app + monitoring stack
 docker-compose up -d --build
+# 🟢 This will build the Docker image and start the Node app + Loki + Grafana
 
-3. Access the Node.js app
-Open your browser at:http://localhost:3000
+# 🔹 3. Check if the Node.js app is running
+curl http://localhost:3000
+# ✅ Output should be: Hello from DevOps Test!
 
-You should see:Hello from DevOps Test!
+# 🔹 4. Open Grafana to see logs & metrics
+# URL: http://localhost:3001
+# Login: admin / admin
+# Add Loki as a data source: http://loki:3100
+# Explore logs: filter by container_name=devops-test-app
+# 📊 You should see logs like:
+# "Server running on port 3000"
+# "Request received on /"
 
-4. Access Grafana (Monitoring/Logging)
+# 🔹 5. Or deploy automatically using the Bash script
+./deploy.sh       # Git Bash / WSL
+bash deploy.sh    # PowerShell
+# ⚡ Script will check Docker, build image, start containers, and confirm success
 
-- URL: http://localhost:3001
+# 🔹 6. CI/CD Workflow
+# Triggered automatically on push or PR to main branch
+# Steps:
+#   1️⃣ Build Docker image
+#   2️⃣ Run a quick test:
+curl http://localhost:3000
+#   3️⃣ If successful, prints: Build and Test passed 🎉
 
-Default credentials:Username: admin
-Password: admin
+📌 Key Notes
+  ## Key Notes
 
-- Add Loki as a data source:URL: http://loki:3100
+- **Node.js App:** Simple Express server that responds with "Hello from DevOps Test!" and logs requests to console.
 
--Explore logs:
+- **Docker & Docker Compose:**  
+  - Dockerfile builds the Node.js app image.  
+  - docker-compose.yml runs the app and monitoring stack in separate containers.  
+  - Port mapping: app → 3000, Grafana → 3001.
 
-   Go to Explore → Loki
+- **Bash Deployment Script (deploy.sh):**  
+  - Checks if Docker is installed.  
+  - Builds the Docker image.  
+  - Starts containers with `docker-compose up -d`.  
+  - Waits and checks if the app container is running.  
+  - Prints success or failure message.
 
-   Filter by container_name=devops-test-app
+- **Logging & Monitoring:**  
+  - Promtail collects logs from the Node.js container.  
+  - Loki stores logs for querying.  
+  - Grafana visualizes logs and metrics.  
+  - Logs track server start and HTTP requests.
 
-   Example log entries:Server running on port 3000
-                       Request received on /
+- **CI/CD (GitHub Actions):**  
+  - Trigger: push or pull request to main branch.  
+  - Builds Docker image.  
+  - Runs a test using `curl http://localhost:3000`.  
+  - Prints “Build and Test passed” if successful.  
+  - Ensures only working code is deployed.
 
-5. Optional: Automated Deployment via Bash Script
-./deploy.sh        # Git Bash / WSL
-bash deploy.sh     # PowerShell
+- **Access & Verification:**  
+  - Node.js app: `http://localhost:3000`  
+  - Grafana dashboard: `http://localhost:3001`  
+  - Check logs: `container_name=devops-test-app`
 
-This script:
-
-   -Checks if Docker is installed
-
-   -Builds the Docker image
-
-   -Starts containers using Docker Compose
-
-   -Checks if the Node.js app container is running
-
-   -Prints a success or error message
-
-CI/CD
-
-The GitHub Actions workflow triggers on every push or pull request to the main branch.
-
-Steps:
-
-   Build Docker image
-
-   Run a test using:curl http://localhost:3000
-   Print Build and Test passed on success
-
-Workflow file: .github/workflows/ci.yml
+- **Challenges / Assumptions:**  
+  - Bash script requires Git Bash or WSL on Windows.  
+  - Docker Desktop must be running.
 
 
